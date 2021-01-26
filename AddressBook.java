@@ -1,9 +1,75 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AddressBook {
 
 	ArrayList<Contact> contactList = new ArrayList<Contact>(); //ArrayList to store contacts
+	static HashMap<String , AddressBook> addressBookDictionary = new HashMap<String , AddressBook >();
+
+	/* method to manage multiple address books */
+	private static void bookManagementMenu() {
+		int choice;
+		Scanner scan =new Scanner(System.in);
+
+		do {
+			System.out.println("Enter your choice: ");
+			System.out.println("1.Create new address book ");
+			System.out.println("2.Access existing address book ");
+			System.out.println("3.Exit ");
+
+			choice = scan.nextInt();
+			switch(choice) {
+				case 1:
+					String bookName = getAddressBookName();
+					if ( addressBookDictionary.containsKey(bookName) == true ) {
+
+						do {
+							System.out.println(bookName + " already exists.Please specify another name. ");
+							bookName = getAddressBookName();
+						} while (addressBookDictionary.containsKey(bookName) != false );
+
+					}
+					AddressBook contactBook = new AddressBook();
+					addressBookDictionary.put(bookName,contactBook);
+					System.out.println(bookName + " created.");
+					contactBook.contactManagementMenu();
+					break;
+				case 2:
+					String bookNameInput = getOldBookName();
+					if (addressBookDictionary.containsKey(bookNameInput) == true) {
+						System.out.println("Welcome to " + bookNameInput + "! Contact management menu : ");
+						addressBookDictionary.get(bookNameInput).contactManagementMenu();
+					}
+					else
+						System.out.println("Sorry!No such address book exists.Please try again.");
+					break;
+
+				case 3:
+					System.exit(0);
+
+				default:
+					System.out.println("Invalid choice.Try again.");
+			}
+		}while(choice != 3);
+
+	}
+
+	/* method to get name of existing address book from user */
+	private static String getOldBookName() {
+		Scanner scan = new Scanner(System.in);
+		System.out.println("Enter name of the address book you wish to access: ");
+		String name = scan.next();
+		return name;
+	}
+	/* method to get name of new address book that user wants to create */
+	private static String getAddressBookName() {
+		Scanner stdin = new Scanner(System.in);
+		System.out.println("Enter name of new address book:");
+		String name = stdin.next();
+		return name;
+	}
+
 
 	/* method to display contact manipulation menu */
 	public void displayMenu() {
@@ -173,26 +239,30 @@ public class AddressBook {
 
 	/* method to delete a contact */
 	private void deleteContacts() {
-		Scanner scan = new Scanner(System.in);
-		System.out.println("Enter the first name of the contact you want to delete: ");
-		String firstName = scan.next();
-		System.out.println("Enter the last name of the contact you want to delete: ");
-		String lastName = scan.next();
+		if (contactList.size() == 0){
+			System.out.println("Contact list is currently empty!");
+		}
+		else {
+			Scanner scan = new Scanner(System.in);
+			System.out.println("Enter the first name of the contact you want to delete: ");
+			String firstName = scan.next();
+			System.out.println("Enter the last name of the contact you want to delete: ");
+			String lastName = scan.next();
 
-		for(int i = 0; i < contactList.size(); i++)
-			if (contactList.get(i).getFirstName().equals(firstName)) {
-				if (contactList.get(i).getLastName().equals(lastName))
-					contactList.remove(contactList.get(i));
-				else
-					System.out.println("No such contact exists.");
-			}
+			for(int i = 0; i < contactList.size(); i++)
+				if (contactList.get(i).getFirstName().equals(firstName)) {
+					if (contactList.get(i).getLastName().equals(lastName))
+						contactList.remove(contactList.get(i));
+					else
+						System.out.println("No such contact exists.");
+				}
+
+		}
 
 	}
 
 	public static void main(String[] args) {
-		System.out.println("Welcome to Address Book Program");
-		AddressBook contactBook = new AddressBook(); //create new address book
-		contactBook.contactManagementMenu();	     //show contact manipulation menu
+		bookManagementMenu();
 	}
 
 }
