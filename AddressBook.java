@@ -1,7 +1,8 @@
 import java.util.Scanner;
 
 public class AddressBook {
-	/* method to get contact details from user */
+	
+/* method to get contact details from user */
 	public void addContact() {
 		Scanner scan = new Scanner(System.in);
 
