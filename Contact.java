@@ -1,4 +1,4 @@
-/*Contact class*/
+//*Contact class*/
 public class Contact {
 	private String firstName;
 	private String lastName;
